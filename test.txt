@@ -1,0 +1,10 @@
+pip install moviepy
+pip install gTTS
+pip install mutagen
+pip install requests
+pip install SpeechRecognition
+pip install pydub
+pip install ffmpeg-python
+
+
+https://www.reddit.com/r/AmItheAsshole/new.json?sort=new

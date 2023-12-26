@@ -1,0 +1,4 @@
+subreddits = [
+	"AmItheAsshole",
+	"NoStupidQuestions",
+]
