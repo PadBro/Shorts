@@ -4,9 +4,13 @@ from datetime import datetime
 from mutagen.mp4 import MP4
 from src.audio import getAudioLength, getSubtitles
 import random
+import os
 
 def getBackground ():
-	return "./background/Splitgate.mp4"
+	path = "./background/"
+	backgrounds = os.listdir(path)
+	backgrounds.remove('.gitkeep')
+	return path + random.choice(backgrounds)
 
 def getVideoLength (backgroundFile):
 	video = MP4(backgroundFile)
@@ -24,7 +28,7 @@ def createClip (audioFile, backgroundFile):
 	newAudioClip = CompositeAudioClip([audioClip])
 	videoClip.audio = newAudioClip
 
-	generator = lambda txt: TextClip(txt, font='Arial', method='caption', size=[720, 1280], fontsize=40, color='white')
+	generator = lambda txt: TextClip(txt, font='Arial', method='caption', size=[680, 1240], fontsize=40, color='white')
 	subtitles = SubtitlesClip(getSubtitles(audioFile), generator)
 	result = CompositeVideoClip([videoClip, subtitles.set_pos(('center','center'))])
 

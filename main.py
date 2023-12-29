@@ -1,6 +1,6 @@
 import urllib.request
 import requests
-from helper import readJson, writeJson
+from src import helper
 from src import youtube
 from src import audio
 from src import video
@@ -9,8 +9,7 @@ def getPost ():
 	subreddit = "AmItheAsshole"
 	response = requests.get(f'https://www.reddit.com/r/{subreddit}/new.json?sort=new')
 
-	with open(f"response/{subreddit}.json", "w") as jsonFile:
-		json.dump(response.json(), jsonFile)
+	helper.writeJson(f"response/{subreddit}.json", response.json())
 
 
 def createShort(text, title, description):
@@ -20,8 +19,8 @@ def createShort(text, title, description):
 	# youtube.uploadVideo(fileName, title, description)
 	return fileName
 
-response = readJson("response/AmItheAsshole.json")
-oldPost = readJson("post.json")
+response = helper.readJson("response/AmItheAsshole.json")
+oldPost = helper.readJson("post.json")
 usedPost = []
 post = response["data"]["children"][0]
 subreddit = post["data"]["subreddit_name_prefixed"]
@@ -39,4 +38,4 @@ createShort(post["data"]["title"] + " " + post["data"]["selftext"], title, descr
 
 # 	print(f"created file {fileName}")
 
-# writeJson("post.json", usedPosts)
+# helper.writeJson("post.json", usedPosts)
