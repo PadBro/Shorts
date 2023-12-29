@@ -4,3 +4,6 @@ background/*
 !background/.gitkeep
 output/*
 !output/.gitkeep
+client_secrets.json
+main.py-oauth2.json
+test.txt

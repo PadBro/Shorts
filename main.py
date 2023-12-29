@@ -12,6 +12,7 @@ import json
 import os
 import whisper_timestamped
 from helper import readJson, writeJson
+from upload import uploadVideo
 
 def getPost ():
 	subreddit = "AmItheAsshole"
@@ -59,7 +60,7 @@ def createClip (audioFile, backgroundFile):
 	newAudioClip = CompositeAudioClip([audioClip])
 	videoClip.audio = newAudioClip
 
-	generator = lambda txt: TextClip(txt, font='Arial', method='caption', size=[720, 1280], fontsize=64, color='white')
+	generator = lambda txt: TextClip(txt, font='Arial', method='caption', size=[720, 1280], fontsize=40, color='white')
 	subtitles = SubtitlesClip(getSubtitles(audioFile), generator)
 	result = CompositeVideoClip([videoClip, subtitles.set_pos(('center','center'))])
 
@@ -71,31 +72,22 @@ def createClip (audioFile, backgroundFile):
 	os.remove(audioFile)
 	return fileName
 
-# def addSubtitles (fileName, audioFile):
-# 	generator = lambda txt: TextClip(txt, font='Arial', method='caption', size=[720, 1280], fontsize=64, color='white')
-# 	subtitles = SubtitlesClip(getSubtitles(), generator)
-
-# 	video = VideoFileClip(fileName)
-
-# 	result = CompositeVideoClip([video, subtitles.set_pos(('center','center'))])
-# 	result.write_videofile(fileName)
-
-def createShort(text):
+def createShort(text, title, description):
 	audioFile = createMP3(text)
 	backgroundFile = getBackground()
 	fileName = createClip(audioFile, backgroundFile)
+	uploadVideo(fileName, title, description)
 	return fileName
 
 response = readJson("response/AmItheAsshole.json")
 oldPost = readJson("post.json")
 usedPost = []
-# selftext
-# title
-# subreddit_name_prefixed
-# permalink
-# url
 post = response["data"]["children"][0]
-createShort(post["data"]["title"] + " " + post["data"]["selftext"])
+subreddit = post["data"]["subreddit_name_prefixed"]
+title = post["data"]["title"] + f" #{subreddit} #Shorts"
+description = post["data"]["url"]
+createShort(post["data"]["title"] + " " + post["data"]["selftext"], title, description)
+
 
 # for post in response["data"]["children"]:
 # 	usedPosts.append(post["data"]["permalink"])
