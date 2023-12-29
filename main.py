@@ -1,18 +1,9 @@
-from moviepy.editor import *
-from moviepy.video.tools.subtitles import SubtitlesClip
-from gtts import gTTS
-from mutagen.mp3 import MP3
-from mutagen.mp4 import MP4
-from datetime import datetime
-import speech_recognition as sr
-import random
 import urllib.request
 import requests
-import json
-import os
-import whisper_timestamped
 from helper import readJson, writeJson
-from upload import uploadVideo
+from src import youtube
+from src import audio
+from src import video
 
 def getPost ():
 	subreddit = "AmItheAsshole"
@@ -21,62 +12,12 @@ def getPost ():
 	with open(f"response/{subreddit}.json", "w") as jsonFile:
 		json.dump(response.json(), jsonFile)
 
-def createMP3 (text):
-	now = datetime.now()
-	time = now.strftime("%Y-%m-%d_%H%M%S")
-	fileName = f'audio/{time}.mp3'
-	tts = gTTS(text, lang='en', tld='us')
-	tts.save(fileName)
-	return fileName
-
-def getBackground ():
-	return "./background/Splitgate.mp4"
-
-def getVideoLength (backgroundFile):
-	video = MP4(backgroundFile)
-	return int(video.info.length)
-
-def getAudioLength (audioFile):
-	audio = MP3(audioFile)
-	return int(audio.info.length)
-
-def getSubtitles (audioFile):
-	model = whisper_timestamped.load_model("base")
-	result = whisper_timestamped.transcribe(model, audioFile)
-	subs = []
-	for segment in result["segments"]:
-		subs.append(((segment["start"], segment["end"]), segment["text"]))
-	return subs
-
-def createClip (audioFile, backgroundFile):
-	videoLength = getVideoLength(backgroundFile)
-	audioLength = getAudioLength(audioFile)
-
-	clipStart = random.randint(0, videoLength - audioLength)
-
-	videoClip = VideoFileClip(backgroundFile).subclip(clipStart, clipStart + audioLength)
-	audioClip = AudioFileClip(audioFile)
-
-	newAudioClip = CompositeAudioClip([audioClip])
-	videoClip.audio = newAudioClip
-
-	generator = lambda txt: TextClip(txt, font='Arial', method='caption', size=[720, 1280], fontsize=40, color='white')
-	subtitles = SubtitlesClip(getSubtitles(audioFile), generator)
-	result = CompositeVideoClip([videoClip, subtitles.set_pos(('center','center'))])
-
-	now = datetime.now()
-	time = now.strftime("%Y-%m-%d_%H%M%S")
-	fileName = f"output/{time}.mp4"
-	result.write_videofile(fileName)
-
-	os.remove(audioFile)
-	return fileName
 
 def createShort(text, title, description):
-	audioFile = createMP3(text)
-	backgroundFile = getBackground()
-	fileName = createClip(audioFile, backgroundFile)
-	uploadVideo(fileName, title, description)
+	audioFile = audio.createMP3(text)
+	backgroundFile = video.getBackground()
+	fileName = video.createClip(audioFile, backgroundFile)
+	# youtube.uploadVideo(fileName, title, description)
 	return fileName
 
 response = readJson("response/AmItheAsshole.json")
