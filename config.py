@@ -3,5 +3,7 @@ subreddits = [
 	"NoStupidQuestions",
 ]
 
-maxVideos = 5
-maxVideoLengthInSeconds = 299
+maxVideos = 1
+partBufferInSeconds = 2
+videoEndBufferInSeconds = 1
+maxVideoLengthInSeconds = (maxVideos * 60) - (maxVideos * partBufferInSeconds) - videoEndBufferInSeconds

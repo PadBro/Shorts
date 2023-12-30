@@ -3,9 +3,11 @@ from moviepy.video.tools.subtitles import SubtitlesClip
 from datetime import datetime
 from mutagen.mp4 import MP4
 from src.audio import getAudioLength, getSubtitles
+from pathlib import Path
+from src import helper
 import random
 import os
-from pathlib import Path
+import math
 
 def getBackground ():
 	path = "./background/"
@@ -47,3 +49,44 @@ def createDir ():
 	currentDir = f"output/{time}"
 	Path(currentDir).mkdir(parents=True, exist_ok=True)
 	return currentDir
+
+def splitParts(clipDir):
+    videoLength = getVideoLength(f"{clipDir}/clip.mp4")
+
+    # check if need to be split into parts
+    if (videoLength < 60):
+    	return
+
+    meta = helper.readJson(f"{clipDir}/meta.json")
+
+    # calculate amount of parts
+    print("calculate amount of parts")
+    amountParts = math.ceil(videoLength / 60)
+
+    # calculate part length
+    partLength = videoLength / amountParts
+
+    # split video into parts
+    print("split video into parts")
+    parts = []
+    for x in range(amountParts):
+        start = x * partLength
+        end = start + partLength
+        if (x != 0):
+            start -= 2
+        parts.append({
+            "start": start,
+            "end": end,
+        })
+        videoClip = VideoFileClip(f"{clipDir}/clip.mp4").subclip(start, end)
+
+        # save parts
+        videoClip.write_videofile(f"{clipDir}/part_{x}.mp4")
+        meta[f"part_{x}"] = {
+            "title": meta["main"]["title"] + " Part " + str(x + 1),
+            "description": meta["main"]["description"] + " Part " + str(x + 1) + " of " + str(amountParts)
+        }
+
+    # add parts info to meta.json
+    print("add parts info to meta.json")
+    helper.writeJson(f"{clipDir}/meta.json", meta)

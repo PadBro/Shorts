@@ -17,7 +17,7 @@ def getAudioLength (audioFile):
 
 def getSubtitles (audioFile):
 	model = whisper_timestamped.load_model("base")
-	result = whisper_timestamped.transcribe(model, audioFile)
+	result = whisper_timestamped.transcribe(model, audioFile, language="en")
 	subs = []
 	for segment in result["segments"]:
 		subs.append(((segment["start"], segment["end"]), segment["text"]))
