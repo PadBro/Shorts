@@ -7,3 +7,6 @@ output/*
 client_secrets.json
 main.py-oauth2.json
 test.txt
+
+__pycache__/
+src/__pycache__/

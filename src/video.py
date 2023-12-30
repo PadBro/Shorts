@@ -5,6 +5,7 @@ from mutagen.mp4 import MP4
 from src.audio import getAudioLength, getSubtitles
 import random
 import os
+from pathlib import Path
 
 def getBackground ():
 	path = "./background/"
@@ -32,10 +33,17 @@ def createClip (audioFile, backgroundFile):
 	subtitles = SubtitlesClip(getSubtitles(audioFile), generator)
 	result = CompositeVideoClip([videoClip, subtitles.set_pos(('center','center'))])
 
-	now = datetime.now()
-	time = now.strftime("%Y-%m-%d_%H%M%S")
-	fileName = f"output/{time}.mp4"
+	currentDir = createDir()
+
+	fileName = f"{currentDir}/clip.mp4"
 	result.write_videofile(fileName)
 
 	os.remove(audioFile)
-	return fileName
+	return currentDir
+
+def createDir ():
+	now = datetime.now()
+	time = now.strftime("%Y-%m-%d_%H%M%S")
+	currentDir = f"output/{time}"
+	Path(currentDir).mkdir(parents=True, exist_ok=True)
+	return currentDir

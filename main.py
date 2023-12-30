@@ -4,38 +4,53 @@ from src import helper
 from src import youtube
 from src import audio
 from src import video
+from config import maxVideos
 
 def getPost ():
-	subreddit = "AmItheAsshole"
-	response = requests.get(f'https://www.reddit.com/r/{subreddit}/new.json?sort=new')
+    subreddit = "AmItheAsshole"
+    response = requests.get(f'https://www.reddit.com/r/{subreddit}/new.json?sort=new')
 
-	helper.writeJson(f"response/{subreddit}.json", response.json())
+    helper.writeJson(f"response/{subreddit}.json", response.json())
 
 
 def createShort(text, title, description):
-	audioFile = audio.createMP3(text)
-	backgroundFile = video.getBackground()
-	fileName = video.createClip(audioFile, backgroundFile)
-	# youtube.uploadVideo(fileName, title, description)
-	return fileName
+    audioFile = audio.createMP3(text)
+    backgroundFile = video.getBackground()
+    currentDir = video.createClip(audioFile, backgroundFile)
+    helper.writeJson(f"{currentDir}/meta.json", {
+        "title": title,
+        "description": description
+    })
 
 response = helper.readJson("response/AmItheAsshole.json")
-oldPost = helper.readJson("post.json")
-usedPost = []
+# oldPost = helper.readJson("data/post.json")
+# usedPosts = []
 post = response["data"]["children"][0]
 subreddit = post["data"]["subreddit_name_prefixed"]
 title = post["data"]["title"] + f" #{subreddit} #Shorts"
 description = post["data"]["url"]
-createShort(post["data"]["title"] + " " + post["data"]["selftext"], title, description)
+text = post["data"]["title"] + " " + post["data"]["selftext"]
+createShort(text, title, description)
 
-
+# counter = 0
 # for post in response["data"]["children"]:
-# 	usedPosts.append(post["data"]["permalink"])
+#     if (counter == maxVideos):
+#         break
 
-# 	if post["data"]["permalink"] in oldPost:
-# 		continue
-# 	createShort(post["data"]["title"] + " " + post["data"]["selftext"])
+#     # todo:
+#     # All videos need to be saved till the post get fetched again
+#     # after fetching check for dublicates the rest can be deleted
+#     usedPosts.append(post["data"]["permalink"])
+#     if post["data"]["permalink"] in oldPost:
+#         continue
 
-# 	print(f"created file {fileName}")
+#     subreddit = post["data"]["subreddit_name_prefixed"]
+#     title = post["data"]["title"] + f" #{subreddit} #Shorts"
+#     description = post["data"]["url"]
+#     text = post["data"]["title"] + " " + post["data"]["selftext"]
+#     createShort(text, title, description)
+#     counter += 1
 
-# helper.writeJson("post.json", usedPosts)
+# helper.writeJson("data/post.json", usedPosts)
+
+# print(f"created {counter} files!")

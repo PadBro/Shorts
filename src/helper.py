@@ -7,4 +7,4 @@ def readJson (file):
 
 def writeJson(file, data):
 	with open(file, "w") as jsonFile:
-		json.dump(data, jsonFile)
+		json.dump(data, jsonFile, indent=4, sort_keys=True)
