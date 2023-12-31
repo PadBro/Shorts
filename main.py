@@ -1,10 +1,11 @@
 import urllib.request
 import requests
 from src import helper
-from src import youtube
 from src import audio
 from src import video
-from config import maxVideos, uploadYoutube
+from src import drive
+from src import discord
+from config import maxVideos
 
 def getPost ():
     subreddit = "AmItheAsshole"
@@ -35,6 +36,8 @@ def createShort(text, title, description):
         }
     })
     video.splitParts(clipDir)
+    folderId = drive.uploadFolder(clipDir)
+    discord.sendMessage(folderId)
 
 def main():
     response = helper.readJson("response/AmItheAsshole.json")
@@ -70,6 +73,5 @@ def devSinglePost():
 
 def test():
     video.splitParts("./output/2023-12-30_231908")
-
 
 main()
