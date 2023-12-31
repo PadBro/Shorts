@@ -19,6 +19,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pylint
+        cp config.example.py config.py
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py')
