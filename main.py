@@ -1,10 +1,10 @@
 import requests
+from config import max_videos
 from src import helper
 from src import audio
 from src import video
 from src import drive
 from src import discord_bot
-from config import max_videos
 
 def get_post ():
     subreddit = "AmItheAsshole"
@@ -36,7 +36,7 @@ def create_short(text, title, description):
     })
     video.split_parts(clip_dir)
     folder_id = drive.upload_folder(clip_dir)
-    discordBot.send_message(folder_id)
+    discord_bot.send_message(folder_id)
 
 def main():
     response = helper.read_json("response/AmItheAsshole.json")
