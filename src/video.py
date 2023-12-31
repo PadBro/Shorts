@@ -1,92 +1,103 @@
-from moviepy.editor import *
-from moviepy.video.tools.subtitles import SubtitlesClip
 from datetime import datetime
-from mutagen.mp4 import MP4
-from src.audio import getAudioLength, getSubtitles
 from pathlib import Path
-from src import helper
 import random
 import os
 import math
+from moviepy.editor import *
+from moviepy.video.tools.subtitles import SubtitlesClip
+from mutagen.mp4 import MP4
+from src.audio import get_audio_length, get_subtitles
+from src import helper
 
-def getBackground ():
-	path = "./background/"
-	backgrounds = os.listdir(path)
-	backgrounds.remove('.gitkeep')
-	return path + random.choice(backgrounds)
+def get_background():
+    path = "./background/"
+    backgrounds = os.listdir(path)
+    backgrounds.remove('.gitkeep')
+    return path + random.choice(backgrounds)
 
-def getVideoLength (backgroundFile):
-	video = MP4(backgroundFile)
-	return int(video.info.length)
+def get_video_length (background_file):
+    video = MP4(background_file)
+    return int(video.info.length)
 
-def createClip (audioFile, backgroundFile):
-	videoLength = getVideoLength(backgroundFile)
-	audioLength = getAudioLength(audioFile)
+def create_clip (audio_file, background_file):
+    video_length = get_video_length(background_file)
+    audio_length = get_audio_length(audio_file)
 
-	clipStart = random.randint(0, videoLength - audioLength)
+    clip_start = random.randint(0, video_length - audio_length)
 
-	videoClip = VideoFileClip(backgroundFile).subclip(clipStart, clipStart + audioLength)
-	audioClip = AudioFileClip(audioFile)
+    video_clip = VideoFileClip(background_file).subclip(clip_start, clip_start + audio_length)
+    audio_clip = AudioFileClip(audio_file)
 
-	newAudioClip = CompositeAudioClip([audioClip])
-	videoClip.audio = newAudioClip
+    new_audio_clip = CompositeAudioClip([audio_clip])
+    video_clip.audio = new_audio_clip
 
-	generator = lambda txt: TextClip(txt, font='Arial', method='caption', size=[680, 1240], fontsize=40, color='white')
-	subtitles = SubtitlesClip(getSubtitles(audioFile), generator)
-	result = CompositeVideoClip([videoClip, subtitles.set_pos(('center','center'))])
+    generator = lambda txt: TextClip(
+        txt,
+        font='Arial',
+        method='caption',
+        size=[680, 1240],
+        fontsize=40,
+        color='white'
+    )
+    subtitles = SubtitlesClip(get_subtitles(audio_file), generator)
+    result = CompositeVideoClip([video_clip, subtitles.set_pos(('center','center'))])
 
-	currentDir = createDir()
+    current_dir = create_dir()
 
-	fileName = f"{currentDir}/clip.mp4"
-	result.write_videofile(fileName)
+    file_name = f"{current_dir}/clip.mp4"
+    result.write_videofile(file_name)
 
-	os.remove(audioFile)
-	return currentDir
+    os.remove(audio_file)
+    return current_dir
 
-def createDir ():
-	now = datetime.now()
-	time = now.strftime("%Y-%m-%d_%H%M%S")
-	currentDir = f"output/{time}"
-	Path(currentDir).mkdir(parents=True, exist_ok=True)
-	return currentDir
+def create_dir ():
+    now = datetime.now()
+    time = now.strftime("%Y-%m-%d_%H%M%S")
+    current_dir = f"output/{time}"
+    Path(current_dir).mkdir(parents=True, exist_ok=True)
+    return current_dir
 
-def splitParts(clipDir):
-    videoLength = getVideoLength(f"{clipDir}/clip.mp4")
+def split_parts(clip_dir):
+    video_length = get_video_length(f"{clip_dir}/clip.mp4")
 
     # check if need to be split into parts
-    if (videoLength < 60):
-    	return
+    if video_length < 60:
+        return
 
-    meta = helper.readJson(f"{clipDir}/meta.json")
+    meta = helper.read_json(f"{clip_dir}/meta.json")
 
     # calculate amount of parts
     print("calculate amount of parts")
-    amountParts = math.ceil(videoLength / 60)
+    amount_parts = math.ceil(video_length / 60)
 
     # calculate part length
-    partLength = videoLength / amountParts
+    part_length = video_length / amount_parts
 
     # split video into parts
     print("split video into parts")
     parts = []
-    for x in range(amountParts):
-        start = x * partLength
-        end = start + partLength
-        if (x != 0):
+    for x in range(amount_parts):
+        start = x * part_length
+        end = start + part_length
+        if x != 0:
             start -= 2
         parts.append({
             "start": start,
             "end": end,
         })
-        videoClip = VideoFileClip(f"{clipDir}/clip.mp4").subclip(start, end)
+        video_clip = VideoFileClip(f"{clip_dir}/clip.mp4").subclip(start, end)
 
         # save parts
-        videoClip.write_videofile(f"{clipDir}/part_{x}.mp4")
+        video_clip.write_videofile(f"{clip_dir}/part_{x}.mp4")
         meta[f"part_{x}"] = {
             "title": meta["main"]["title"] + " Part " + str(x + 1),
-            "description": meta["main"]["description"] + " Part " + str(x + 1) + " of " + str(amountParts)
+            "description": meta["main"]["description"] +
+                " Part " +
+                str(x + 1) +
+                " of " +
+                str(amount_parts)
         }
 
     # add parts info to meta.json
     print("add parts info to meta.json")
-    helper.writeJson(f"{clipDir}/meta.json", meta)
+    helper.write_json(f"{clip_dir}/meta.json", meta)

@@ -1,12 +1,13 @@
+# pylint: skip-file
 subreddits = [
 	"AmItheAsshole",
 	"NoStupidQuestions",
 ]
 
-maxVideos = 1
-partBufferInSeconds = 2
-videoEndBufferInSeconds = 1
-maxVideoLengthInSeconds = (maxVideos * 60) - (maxVideos * partBufferInSeconds) - videoEndBufferInSeconds
+max_videos = 1
+part_buffer_in_seconds = 2
+video_end_buffer_in_seconds = 1
+max_video_length_in_seconds = (max_videos * 60) - (max_videos * part_buffer_in_seconds) - video_end_buffer_in_seconds
 
-discordToken = ""
-discordChannelId = ""
+discord_token = ""
+discord_channel_id = ""
