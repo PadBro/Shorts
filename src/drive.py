@@ -1,5 +1,6 @@
-import os.path
+"""Module providing google drive connectivity."""
 
+import os.path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -10,6 +11,7 @@ from googleapiclient.http import MediaFileUpload
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
 def login():
+    """Function retriving google drive credentials."""
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -26,7 +28,7 @@ def login():
             )
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open("driveToken.json", "w") as token:
+        with open("driveToken.json", "w", encoding="utf-8") as token:
             token.write(creds.to_json())
 
     try:
@@ -36,6 +38,7 @@ def login():
         return None
 
 def create_folder(service, folder_path):
+    """Function creatring folder in google drive."""
     path_parts = folder_path.split("/")
     print("creating folder " + path_parts[-1])
     try:
@@ -53,6 +56,7 @@ def create_folder(service, folder_path):
         return None
 
 def upload_file(service, folder_id, file_name, folder_path):
+    """Function uploading a file to the provided folder in google drive."""
     print("uploading " + file_name)
     try:
         file_metadata = {"name": file_name, "parents": [folder_id]}
@@ -72,6 +76,7 @@ def upload_file(service, folder_id, file_name, folder_path):
     return file.get("id")
 
 def upload_folder(folder_path):
+    """Function uploading the provided folder in google drive."""
     try:
         service = login()
         folder_id = create_folder(service, folder_path)

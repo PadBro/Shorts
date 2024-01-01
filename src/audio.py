@@ -1,9 +1,12 @@
+"""Module providing functionality to handle mp3 files."""
+
 from datetime import datetime
 from gtts import gTTS
 from mutagen.mp3 import MP3
 import whisper_timestamped
 
 def create_mp3 (text):
+    """Function creating a mp3 file from text."""
     now = datetime.now()
     time = now.strftime("%Y-%m-%d_%H%M%S")
     file_name = f'audio/{time}.mp3'
@@ -12,10 +15,12 @@ def create_mp3 (text):
     return file_name
 
 def get_audio_length (audio_file):
+    """Function getting the length of the provided mp3 file."""
     audio = MP3(audio_file)
     return int(audio.info.length)
 
 def get_subtitles (audio_file):
+    """Function generating timestamped subtitles."""
     model = whisper_timestamped.load_model("base")
     result = whisper_timestamped.transcribe(model, audio_file, language="en")
     subs = []

@@ -1,3 +1,5 @@
+"""Module providing discord messaging function."""
+
 import platform
 import asyncio
 import discord
@@ -5,6 +7,7 @@ from discord.ext import commands
 from config import discord_token, discord_channel_id
 
 class Bot(commands.AutoShardedBot):
+    """Class representing a discord bot"""
     def __init__(self, folder_id) -> None:
         self.folder_id = folder_id
         intents: discord.Intents = discord.Intents.default()
@@ -13,6 +16,7 @@ class Bot(commands.AutoShardedBot):
         super().__init__(command_prefix="!", intents=intents)
 
     async def on_ready(self) -> None:
+        """Function send message when the bot is connected."""
         print(f'logged in to discord as {self.user}')
         channel = self.get_channel(discord_channel_id)
 
@@ -38,6 +42,7 @@ class Bot(commands.AutoShardedBot):
 
 
 def send_message(folder_id):
+    """Function sending messages to a discord server."""
     if platform.system().lower() == 'windows':
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 

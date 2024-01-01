@@ -1,25 +1,36 @@
+"""Module providing functionality to handle mp4 files."""
+
 from datetime import datetime
 from pathlib import Path
 import random
 import os
 import math
-from moviepy.editor import *
+from moviepy.editor import (
+    VideoFileClip,
+    AudioFileClip,
+    CompositeAudioClip,
+    TextClip,
+    CompositeVideoClip
+)
 from moviepy.video.tools.subtitles import SubtitlesClip
 from mutagen.mp4 import MP4
 from src.audio import get_audio_length, get_subtitles
 from src import helper
 
 def get_background():
+    """Function chooses random background video."""
     path = "./background/"
     backgrounds = os.listdir(path)
     backgrounds.remove('.gitkeep')
     return path + random.choice(backgrounds)
 
 def get_video_length (background_file):
+    """Function getting the length of the provided mp4 file."""
     video = MP4(background_file)
     return int(video.info.length)
 
 def create_clip (audio_file, background_file):
+    """Function generating shorts clip."""
     video_length = get_video_length(background_file)
     audio_length = get_audio_length(audio_file)
 
@@ -31,15 +42,7 @@ def create_clip (audio_file, background_file):
     new_audio_clip = CompositeAudioClip([audio_clip])
     video_clip.audio = new_audio_clip
 
-    generator = lambda txt: TextClip(
-        txt,
-        font='Arial',
-        method='caption',
-        size=[680, 1240],
-        fontsize=40,
-        color='white'
-    )
-    subtitles = SubtitlesClip(get_subtitles(audio_file), generator)
+    subtitles = SubtitlesClip(get_subtitles(audio_file), subtitles_generator)
     result = CompositeVideoClip([video_clip, subtitles.set_pos(('center','center'))])
 
     current_dir = create_dir()
@@ -50,7 +53,19 @@ def create_clip (audio_file, background_file):
     os.remove(audio_file)
     return current_dir
 
+def subtitles_generator(txt):
+    """Function generator for SubtitlesClip."""
+    return TextClip(
+        txt,
+        font='Arial',
+        method='caption',
+        size=[680, 1240],
+        fontsize=40,
+        color='white'
+    )
+
 def create_dir ():
+    """Function creating local folder for clips and meta data."""
     now = datetime.now()
     time = now.strftime("%Y-%m-%d_%H%M%S")
     current_dir = f"output/{time}"
@@ -58,6 +73,7 @@ def create_dir ():
     return current_dir
 
 def split_parts(clip_dir):
+    """Function splits the given clip into parts and saves the meta data."""
     video_length = get_video_length(f"{clip_dir}/clip.mp4")
 
     # check if need to be split into parts

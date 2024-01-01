@@ -1,3 +1,5 @@
+"""Module to create short video from a reddit source."""
+
 import requests
 from config import max_videos
 from src import helper
@@ -6,14 +8,16 @@ from src import video
 from src import drive
 from src import discord_bot
 
-def get_post ():
+def get_post():
+    """Function fetching post from subreddit."""
     subreddit = "AmItheAsshole"
-    response = requests.get(f'https://www.reddit.com/r/{subreddit}/new.json?sort=new')
+    response = requests.get(f'https://www.reddit.com/r/{subreddit}/new.json?sort=new', timeout=30)
 
     helper.write_json(f"response/{subreddit}.json", response.json())
 
 
 def create_short(text, title, description):
+    """Function creating shorts."""
     print("creating mp3 file")
     audio_file = audio.create_mp3(text)
     # check if audio length is within the config
@@ -39,6 +43,7 @@ def create_short(text, title, description):
     discord_bot.send_message(folder_id)
 
 def main():
+    """Function main."""
     response = helper.read_json("response/AmItheAsshole.json")
     old_posts = helper.read_json("data/post.json")
 
@@ -62,6 +67,7 @@ def main():
     print(f"created {counter} files!")
 
 def dev_single_post():
+    """Function dev."""
     response = helper.read_json("response/AmItheAsshole.json")
     post = response["data"]["children"][0]
     subreddit = post["data"]["subreddit_name_prefixed"]
@@ -69,8 +75,5 @@ def dev_single_post():
     description = post["data"]["url"]
     text = post["data"]["title"] + " " + post["data"]["selftext"]
     create_short(text, title, description)
-
-def test():
-    video.split_parts("./output/2023-12-30_231908")
 
 main()
