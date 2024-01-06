@@ -1,14 +1,13 @@
 """Module to create short video from a reddit source."""
 
-import requests
 import argparse
-from config import max_videos
+import requests
+from config import max_videos, subreddit
 from src import helper
 from src import audio
 from src import video
 from src import drive
 from src import discord_bot
-from config import subreddit
 
 def get_posts():
     """Function fetching post from subreddit."""
@@ -67,42 +66,42 @@ def main(background=None, fetch_posts=False):
     if counter != 0:
         return
 
-    result = input("No clips created. Do you want to rerun the command with --fetch-posts argument? (Y/n): ").lower()
-    if (result == "" or result == "y" or result == "yes"):
+    result = input(
+        "No clips created. Do you want to rerun the command with --fetch-posts argument? (Y/n): "
+    ).lower()
+    if result in ('', 'y', 'yes'):
         main(background=background, fetch_posts=True)
 
 def dev(background=None, fetch_posts=False):
     """Function dev."""
-    folder_id = drive.upload_folder("./output/2024-01-06_210221")
-    discord_bot.send_message(folder_id)
-    # if fetch_posts:
-    #     get_posts()
-    # background_file = video.get_background(background)
-    # print(background_file)
-    # response = helper.read_json("response/AmItheAsshole.json")
-    # post = response["data"]["children"][2]
+    if fetch_posts:
+        get_posts()
+    background_file = video.get_background(background)
+    print(background_file)
+    response = helper.read_json("response/AmItheAsshole.json")
+    post = response["data"]["children"][2]
 
-    # title = post["data"]["title"] + " #aita #reddit"
-    # description = post["data"]["url"]
-    # text = post["data"]["title"] + " " + post["data"]["selftext"]
-    # print("generating clip for: " + post["data"]["url"])
+    title = post["data"]["title"] + " #aita #reddit"
+    description = post["data"]["url"]
+    text = post["data"]["title"] + " " + post["data"]["selftext"]
+    print("generating clip for: " + post["data"]["url"])
 
-    # print("creating mp3 file")
-    # check if audio length is within the config
+    print("creating mp3 file")
+    audio_file = audio.create_mp3(text)
 
-    # print("choosing background")
-    # background_file = video.get_background()
-    # print("generating clip")
-    # clip_dir = video.create_clip(audio_file, background_file)
+    print("choosing background")
+    background_file = video.get_background()
+    print("generating clip")
+    clip_dir = video.create_clip(audio_file, background_file)
 
-    # print("saving meta data")
-    # helper.write_json(f"{clip_dir}/meta.json", {
-    #     "main": {
-    #         "title": title,
-    #         "description": description
-    #     }
-    # })
-    # video.split_parts(clip_dir)
+    print("saving meta data")
+    helper.write_json(f"{clip_dir}/meta.json", {
+        "main": {
+            "title": title,
+            "description": description
+        }
+    })
+    video.split_parts(clip_dir)
 
 
 if __name__ == "__main__":
@@ -111,11 +110,25 @@ if __name__ == "__main__":
         description='Parses Reddit posts and creates a clip',
     )
 
-    parser.add_argument('-b', '--background', help='Name of background file')
+    parser.add_argument(
+        '-b',
+        '--background',
+        help='Name of background file'
+    )
 
-    parser.add_argument('-d', '--dev', action='store_true', help='Execute dev function')
+    parser.add_argument(
+        '-d',
+        '--dev',
+        action='store_true',
+        help='Execute dev function'
+    )
 
-    parser.add_argument('-fp', '--fetch-posts', action='store_true', help='Fetches posts from reddit')
+    parser.add_argument(
+        '-fp',
+        '--fetch-posts',
+        action='store_true',
+        help='Fetches posts from reddit'
+    )
 
     args = parser.parse_args()
 

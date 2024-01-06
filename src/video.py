@@ -5,7 +5,6 @@ from pathlib import Path
 import random
 import os
 import math
-from config import max_part_length_in_seconds
 from moviepy.editor import (
     VideoFileClip,
     AudioFileClip,
@@ -15,6 +14,7 @@ from moviepy.editor import (
 )
 from moviepy.video.tools.subtitles import SubtitlesClip
 from mutagen.mp4 import MP4
+from config import max_part_length_in_seconds
 from src.audio import get_audio_length, get_subtitles
 from src import helper
 
@@ -31,9 +31,9 @@ def get_background(background=None):
 
     backgrounds = os.listdir(path)
     backgrounds.remove('.gitkeep')
-    randomBackground = random.choice(backgrounds)
-    print(f"random background: {randomBackground}")
-    return path + randomBackground
+    random_background = random.choice(backgrounds)
+    print(f"random background: {random_background}")
+    return path + random_background
 
 def get_video_length (background_file):
     """Function getting the length of the provided mp4 file."""
@@ -43,7 +43,7 @@ def get_video_length (background_file):
 def create_clip (audio_file, background_file):
     """Function creating shorts clip."""
     print("creating clip")
-    
+
     video_length = get_video_length(background_file)
     audio_length = get_audio_length(audio_file)
 
