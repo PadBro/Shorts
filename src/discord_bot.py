@@ -23,17 +23,21 @@ class Bot(commands.AutoShardedBot):
         await channel.send(
             "A new folder has been uploaded: \n" +
             "https://drive.google.com/drive/u/3/folders/" + self.folder_id + "\n" +
-            "Todo:"
+            "Todo:",
+            suppress_embeds=True
         )
 
         await channel.send(
-            "Upload to [YT](https://studio.youtube.com/channel/UCFyJy3JBtBLFJHUe9hGxqbA)"
+            "Upload to [YT](https://studio.youtube.com/channel/UCFyJy3JBtBLFJHUe9hGxqbA)",
+            suppress_embeds=True
         )
         await channel.send(
-            "Upload to [TikTok](https://www.tiktok.com/creator-center/upload?from=upload)"
+            "Upload to [TikTok](https://www.tiktok.com/creator-center/upload?from=upload)",
+            suppress_embeds=True
         )
         await channel.send(
-            "Upload to [Instagram](https://www.instagram.com/)"
+            "Upload to [Instagram](https://www.instagram.com/)",
+            suppress_embeds=True
         )
 
         await channel.send("Please delete the done Todos")
