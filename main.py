@@ -12,6 +12,7 @@ from config import subreddit
 
 def get_posts():
     """Function fetching post from subreddit."""
+    print("fetching posts")
     response = requests.get(f'https://www.reddit.com/r/{subreddit}/new.json?sort=new', timeout=30)
     helper.write_json(f"response/{subreddit}_x.json", response.json())
 
@@ -72,8 +73,10 @@ def main(background=None, fetch_posts=False):
 
 def dev(background=None, fetch_posts=False):
     """Function dev."""
-    if fetch_posts:
-        get_posts()
+    folder_id = drive.upload_folder("./output/2024-01-06_210221")
+    discord_bot.send_message(folder_id)
+    # if fetch_posts:
+    #     get_posts()
     # background_file = video.get_background(background)
     # print(background_file)
     # response = helper.read_json("response/AmItheAsshole.json")
@@ -85,8 +88,7 @@ def dev(background=None, fetch_posts=False):
     # print("generating clip for: " + post["data"]["url"])
 
     # print("creating mp3 file")
-    # audio_file = audio.create_mp3(text)
-    # # check if audio length is within the config
+    # check if audio length is within the config
 
     # print("choosing background")
     # background_file = video.get_background()
@@ -116,9 +118,8 @@ if __name__ == "__main__":
     parser.add_argument('-fp', '--fetch-posts', action='store_true', help='Fetches posts from reddit')
 
     args = parser.parse_args()
-    print(args)
 
     if args.dev:
         dev(background=args.background, fetch_posts=args.fetch_posts)
-    # else:
-    #     main(background=args.background, fetch_posts=args.fetch_posts)
+    else:
+        main(background=args.background, fetch_posts=args.fetch_posts)

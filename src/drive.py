@@ -61,7 +61,7 @@ def upload_file(service, folder_id, file_name, folder_path):
     try:
         file_metadata = {"name": file_name, "parents": [folder_id]}
 
-        media = MediaFileUpload(folder_path + "/" + file_name)
+        media = MediaFileUpload(folder_path + "/" + file_name, resumable=True)
         file = (
             service.files()
             .create(body=file_metadata, media_body=media, fields="id")
