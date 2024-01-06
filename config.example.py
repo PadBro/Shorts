@@ -1,8 +1,5 @@
 # pylint: skip-file
-subreddits = [
-	"AmItheAsshole",
-	"NoStupidQuestions",
-]
+subreddit = "AmItheAsshole"
 
 max_videos = 1
 part_buffer_in_seconds = 2
