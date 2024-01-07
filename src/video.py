@@ -14,7 +14,7 @@ from moviepy.editor import (
 )
 from moviepy.video.tools.subtitles import SubtitlesClip
 from mutagen.mp4 import MP4
-from config import max_part_length_in_seconds
+from config import max_part_length_in_seconds, video_end_buffer_in_seconds
 from src.audio import get_audio_length, get_subtitles
 from src import helper
 
@@ -47,9 +47,12 @@ def create_clip (audio_file, background_file):
     video_length = get_video_length(background_file)
     audio_length = get_audio_length(audio_file)
 
-    clip_start = random.randint(0, video_length - audio_length)
+    clip_start = random.randint(0, video_length - audio_length - video_end_buffer_in_seconds)
 
-    video_clip = VideoFileClip(background_file).subclip(clip_start, clip_start + audio_length)
+    video_clip = VideoFileClip(background_file).subclip(
+        clip_start,
+        clip_start + audio_length + video_end_buffer_in_seconds
+    )
     audio_clip = AudioFileClip(audio_file)
 
     new_audio_clip = CompositeAudioClip([audio_clip])
