@@ -14,7 +14,7 @@ from moviepy.editor import (
 )
 from moviepy.video.tools.subtitles import SubtitlesClip
 from mutagen.mp4 import MP4
-from config import max_part_length_in_seconds, video_end_buffer_in_seconds, subtitles
+from config import max_part_length_in_seconds, video_end_buffer_in_seconds, subtitles as subtitles_config
 from src.audio import get_audio_length, get_subtitles
 from src import helper
 
@@ -75,8 +75,8 @@ def subtitles_generator(txt):
         txt,
         font='Arial',
         method='caption',
-        size=[720 - subtitles["marginX"], 1280 - subtitles["marginY"]],
-        fontsize=subtitles["fontsize"],
+        size=[720 - subtitles_config["marginX"], 1280 - subtitles_config["marginY"]],
+        fontsize=subtitles_config["fontsize"],
         color='white'
     )
 
