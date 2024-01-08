@@ -1,10 +1,7 @@
 FROM python:3.10-slim-buster
 
 RUN apt-get update && apt-get install -y ffmpeg ghostscript wget && \
-    apt-get install -y autoconf pkg-config
-
-RUN apt-get update && apt-get install -y wget && \
-    apt-get install -y build-essential curl libpng-dev && \
+    apt-get install -y autoconf pkg-config build-essential curl libpng-dev && \
     wget https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.1-24.tar.gz && \
     tar xzf 7.1.1-24.tar.gz && \
     rm 7.1.1-24.tar.gz && \
@@ -22,5 +19,3 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 CMD tail -f /dev/null
-
-

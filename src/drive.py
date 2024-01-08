@@ -26,7 +26,7 @@ def login():
             flow = InstalledAppFlow.from_client_secrets_file(
                 "client_secrets.json", SCOPES
             )
-            creds = flow.run_local_server(port=0)
+            creds = flow.run_local_server(bind_addr="0.0.0.0", port=62432, open_browser=False)
         # Save the credentials for the next run
         with open("driveToken.json", "w", encoding="utf-8") as token:
             token.write(creds.to_json())
