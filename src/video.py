@@ -14,7 +14,11 @@ from moviepy.editor import (
 )
 from moviepy.video.tools.subtitles import SubtitlesClip
 from mutagen.mp4 import MP4
-from config import max_part_length_in_seconds, video_end_buffer_in_seconds, subtitles as subtitles_config
+from config import (
+    max_part_length_in_seconds,
+    video_end_buffer_in_seconds,
+    subtitles as subtitles_config
+)
 from src.audio import get_audio_length, get_subtitles
 from src import helper
 
