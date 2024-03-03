@@ -1,11 +1,11 @@
 """Module providing functionality to handle mp3 files."""
 
+import random
 from datetime import datetime
 from mutagen.mp3 import MP3
 import whisper_timestamped
 from tts.tiktok.main import tts
 from config import tts_voices
-import random
 
 def create_mp3 (text):
     """Function creating a mp3 file from text."""

@@ -82,22 +82,21 @@ def main(background=None, fetch_posts=False):
 def dev(background=None, fetch_posts=False):
     """Function dev."""
 
-    folder_id = drive.upload_folder("./output/2024-03-03_213911")
-    discord_bot.send_message(folder_id)
-    # if fetch_posts:
-    #     get_posts()
-    # background_file = video.get_background(background)
+    # folder_id = drive.upload_folder("./output/2024-03-03_213911")
+    # discord_bot.send_message(folder_id)
+    if fetch_posts:
+        get_posts()
+    background_file = video.get_background(background)
     # print(background_file)
-    # response = helper.read_json(f"response/{subreddit}.json")
-    # post = response["data"]["children"][4]
+    response = helper.read_json(f"response/{subreddit}.json")
+    post = response["data"]["children"][4]
 
     # title = post["data"]["title"] + " #aita #reddit"
     # description = post["data"]["url"]
-    # text = post["data"]["title"] + " " + post["data"]["selftext"]
+    text = post["data"]["title"] + " " + post["data"]["selftext"]
     # print("generating clip for: " + post["data"]["url"])
 
-    # print("creating mp3 file")
-    # audio_file = audio.create_mp3(text)
+    audio_file = audio.create_mp3(text)
 
     # print("choosing background")
     # background_file = video.get_background(background)

@@ -1,3 +1,4 @@
+"""Module all available voices."""
 voices = [
     # DISNEY VOICES
     'en_us_ghostface',            # Ghost Face

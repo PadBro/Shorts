@@ -78,7 +78,7 @@ def tts(text: str, voice: str = "none", filename: str = "output.mp3") -> None:
         print("No voice has been selected")
         return
 
-    if not voice in voices:
+    if voice not in voices:
         print("Voice does not exist")
         return
 
