@@ -27,10 +27,10 @@ def get_background(background=None):
     path = "./background/"
 
     if background:
-        file_path = Path(f"{path}background")
+        file_path = Path(f"{path}{background}")
         if file_path.exists():
-            print(f"background: {background}")
-            return background
+            print(f"background: {path}{background}")
+            return f"{path}{background}"
         print(f"could not find \"{background}\"")
 
     backgrounds = os.listdir(path)

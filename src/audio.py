@@ -4,6 +4,7 @@ from datetime import datetime
 from gtts import gTTS
 from mutagen.mp3 import MP3
 import whisper_timestamped
+from tts.tiktok.main import tts
 
 def create_mp3 (text):
     """Function creating a mp3 file from text."""
@@ -11,8 +12,8 @@ def create_mp3 (text):
     now = datetime.now()
     time = now.strftime("%Y-%m-%d_%H%M%S")
     file_name = f'audio/{time}.mp3'
-    tts = gTTS(text, lang='en', tld='us')
-    tts.save(file_name)
+
+    tts(text, 'en_us_007', file_name)
     return file_name
 
 def get_audio_length (audio_file):
