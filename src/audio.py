@@ -5,6 +5,8 @@ from gtts import gTTS
 from mutagen.mp3 import MP3
 import whisper_timestamped
 from tts.tiktok.main import tts
+from config import tts_voices
+import random
 
 def create_mp3 (text):
     """Function creating a mp3 file from text."""
@@ -13,7 +15,11 @@ def create_mp3 (text):
     time = now.strftime("%Y-%m-%d_%H%M%S")
     file_name = f'audio/{time}.mp3'
 
-    tts(text, 'en_us_007', file_name)
+    print("choosing voice")
+    voice = random.choice(tts_voices)
+    print(f"picked voice: {voice}")
+
+    tts(text, voice, file_name)
     return file_name
 
 def get_audio_length (audio_file):

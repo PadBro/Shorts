@@ -13,6 +13,8 @@ subtitles = {
 	"fontsize": 40,
 }
 
+tts_voices = ['en_us_007']
+
 discord = {
 	"token": "",
 	"channel_id": 1111111111111111111,
