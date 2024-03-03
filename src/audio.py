@@ -1,7 +1,6 @@
 """Module providing functionality to handle mp3 files."""
 
 from datetime import datetime
-from gtts import gTTS
 from mutagen.mp3 import MP3
 import whisper_timestamped
 from tts.tiktok.main import tts
