@@ -81,6 +81,7 @@ def main(background=None, fetch_posts=False):
 
 def dev(background=None, fetch_posts=False):
     """Function dev."""
+    # pylint: disable=all
 
     # folder_id = drive.upload_folder("./output/2024-03-03_213911")
     # discord_bot.send_message(folder_id)
